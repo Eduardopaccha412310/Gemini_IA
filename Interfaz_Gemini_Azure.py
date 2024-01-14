@@ -65,7 +65,7 @@ class VentanaPrincipal:
         else:
             return False
         
-    def html_to_docx( text, output_path):
+    def html_to_docx(self, text, output_path):
         # Verificar si el archivo ya existe
         original_output_path = output_path
         counter = 1
@@ -148,6 +148,8 @@ class VentanaPrincipal:
         self.boton_chat.bind("<FocusIn>", lambda event: self.leer_texto_boton(self.boton_chat))
         self.boton_foto.bind("<FocusIn>", lambda event: self.leer_texto_boton(self.boton_foto))
         self.boton_cerrar.bind("<FocusIn>", lambda event: self.leer_texto_boton(self.boton_cerrar))
+        # Establecer el foco en la ventana principal
+        master.focus_set()
 
     def centra_ventana(self):
         ancho_ventana = 600
@@ -191,7 +193,8 @@ class VentanaPrincipal:
         entrada.pack(pady=9)
         # Establecer autofocus en la entrada de texto
         entrada.focus_set() 
-
+        
+        self.hablarpy("Escribir")
 
         model = genai.GenerativeModel('gemini-pro')
         chat = model.start_chat(history=[])
@@ -209,8 +212,15 @@ class VentanaPrincipal:
         #boton_enviar2.focus_set()
         
         # Agregar el botón "Por voz" en la ventana de chat
-        boton_comando_voz = tk.Button(ventana_chat, text="Comando de voz", command=lambda: on_boton_icono_click(), bg='#500', fg='#ffffff', width=16, height=2,takefocus=True)
-        boton_comando_voz.pack(side=tk.LEFT)
+        #boton_comando_voz = tk.Button(ventana_chat, text="Comando de voz", command=lambda: on_boton_icono_click(), bg='#500', fg='#ffffff', width=16, height=2,takefocus=True)
+        #boton_comando_voz.pack(side=tk.LEFT)
+
+        ## Btn Guardar
+
+        # Agregar el botón "Guardar texto generado'
+        boton_guardar_chat = tk.Button(ventana_chat, text="Guardar respuesta", command=lambda:self.html_to_docx(self.resultado_label.cget("text"), 'respuestas/texto_escanneado.docx'), bg='#500', fg='#ffffff', width=16, height=2,takefocus=True)
+        boton_guardar_chat.pack(side=tk.LEFT)
+
 
         # Vincular la tecla "Esc" al método cerrar_ventana_chat
         ventana_chat.bind("<Escape>", lambda event: self.cerrar_ventana_chat(ventana_chat))
@@ -228,9 +238,9 @@ class VentanaPrincipal:
         ##Se puede establecer un comando antes de  TAB
         entrada.bind("<Control-Tab>", lambda event: self.focus_next_widget(event, entrada, boton_enviar2, boton_cerrar_chat))
         #self.hablarpy("Enviar")
-        boton_enviar2.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_enviar2, boton_cerrar_chat, boton_comando_voz))
-        boton_cerrar_chat.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_cerrar_chat, boton_comando_voz, boton_enviar2))
-        boton_comando_voz.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_comando_voz, boton_enviar2, boton_cerrar_chat))
+        boton_enviar2.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_enviar2, boton_cerrar_chat, boton_guardar_chat))
+        boton_cerrar_chat.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_cerrar_chat, boton_guardar_chat, boton_enviar2))
+        boton_guardar_chat.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_guardar_chat, boton_enviar2, boton_cerrar_chat))
         
         # Vincular la tecla "Tab" a la función leer_texto_boton cuando los botones tienen el foco
         #boton_enviar2.bind("<FocusIn>", lambda event: self.leer_texto_boton(boton_enviar2))
@@ -249,6 +259,7 @@ class VentanaPrincipal:
             
             boton_enviar2.config(state=tk.DISABLED)
             entrada.delete("1.0", tk.END)
+            
 
             if mensaje=="salir": 
                 exit()    
@@ -329,7 +340,7 @@ class VentanaPrincipal:
 
         # Establecer autofocus en la entrada de texto
         entry_mensaje.focus_set()  
-
+        self.hablarpy("Escribir")
 
         #Salida Respuesta
         self.resultado_label = tk.Label(ventana_foto, text="",font=("Arial", 8),bg='#222222', fg='#ffffff', width=90, height=4)
@@ -343,8 +354,12 @@ class VentanaPrincipal:
         boton_cerrar_pic.pack(side=tk.LEFT, padx=(0, 5))
 
         # Agregar el botón "Por voz" en la ventana de chat
-        boton_comando_voz_pic = tk.Button(ventana_foto, text="Comando de voz", command=lambda: on_boton_icono_click(), bg='#500', fg='#ffffff', width=16, height=2)
-        boton_comando_voz_pic.pack(side=tk.LEFT)
+        #boton_comando_voz_pic = tk.Button(ventana_foto, text="Comando de voz", command=lambda: on_boton_icono_click(), bg='#500', fg='#ffffff', width=16, height=2)
+        #boton_comando_voz_pic.pack(side=tk.LEFT)
+
+        # Agregar el botón "Guardar texto generado'
+        boton_guardar_pic = tk.Button(ventana_foto, text="Guardar respuesta", command=lambda:self.html_to_docx(self.resultado_label.cget("text"), 'respuestas/texto_escanneado.docx'), bg='#500', fg='#ffffff', width=16, height=2,takefocus=True)
+        boton_guardar_pic.pack(side=tk.LEFT)
 
         # Vincular la tecla "Esc" al método cerrar_ventana_chat
         #ventana_foto.bind("<Escape>", lambda event: self.cerrar_ventana_foto(ventana_foto))
@@ -365,9 +380,9 @@ class VentanaPrincipal:
         #entry_mensaje.bind("<Control-Tab>", cambiar_enfoque)
         entry_mensaje.bind("<Control-Tab>", lambda event: self.focus_next_widget(event, entry_mensaje, boton_enviar_pic, boton_cerrar_pic))
         #self.hablarpy("Enviar")
-        boton_enviar_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_enviar_pic, boton_cerrar_pic, boton_comando_voz_pic))
-        boton_cerrar_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_cerrar_pic, boton_comando_voz_pic, boton_enviar_pic))
-        boton_comando_voz_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_comando_voz_pic, boton_enviar_pic, boton_cerrar_pic))
+        boton_enviar_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_enviar_pic, boton_cerrar_pic, boton_guardar_pic))
+        boton_cerrar_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_cerrar_pic, boton_guardar_pic, boton_enviar_pic))
+        boton_guardar_pic.bind("<Tab>", lambda event: self.focus_next_widget(event, boton_guardar_pic, boton_enviar_pic, boton_cerrar_pic))
 
         def on_boton_icono_click():
         # Aquí puedes poner la lógica que deseas ejecutar cuando se haga clic en el botón con icono
