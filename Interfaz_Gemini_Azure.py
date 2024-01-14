@@ -88,7 +88,7 @@ class VentanaPrincipal:
 
         #Azure-2                    AQUI Tu KEY DE AZURE
         
-        speech_config = speechsdk.SpeechConfig(subscription='d214b416ed6542d1875694d4e84b4ad0', region="brazilsouth")
+        speech_config = speechsdk.SpeechConfig(subscription=' api azure ', region="brazilsouth")
         audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True) 
         speech_config.speech_synthesis_voice_name='es-EC-AndreaNeural' #definimos la voz a utilizar
         speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
@@ -106,7 +106,7 @@ class VentanaPrincipal:
     def __init__(self, master):
                 
         #GEMINI-2                       AQUI Tu KEY DE GOOGLE      
-        GOOGLE_API_KEY='AIzaSyCIWr5RYw8Oewzzr99Xg4jLlLh6_Ux2TmM'
+        GOOGLE_API_KEY=' api Google '
         genai.configure(api_key=GOOGLE_API_KEY)
     
         self.master = master
